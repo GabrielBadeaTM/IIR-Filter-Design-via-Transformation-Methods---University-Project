@@ -1,0 +1,117 @@
+%
+%	File BUT_FTI_AMPLIFIED.M
+%
+%	Function: BUT_FTI_AMPLIFIED
+%
+%	Synopsis: [B,A,M_found,W_c] = But_FTI_amplified(W_p,W_s,Delta_p,Delta_s,Ts) ; 
+%
+%	Designs a low-pass discrete IIR filter of Butterworth class,
+%	by solving a design problem with amplified passband tolerance.
+%   In this design, the magnitude at zero frequency H(0) is 1 + Delta_p,
+%   instead of the usual value 1.
+%   Outputs minimal order M found and W_c calculated.
+%
+%	Inputs: W_p     = the relative passband upper limit 
+%	                  (a number between 0 and 1); 
+%	        W_s     = the relative stopband lower limit 
+%	                  (a number between 0 and 1, at least equal to W_p); 
+%	        Delta_p = the tolerance in the passband (a number between 0 and 1); 
+%	        Delta_s = the tolerance in the stopband (a number between 0 and 1); 
+%	        Ts      = the sampling period required (by default, Ts=2). 
+%
+%	Missing, empty or inconsistent inputs return empty or wrong output. 
+%
+%	Uses:	 WAR_ERR 
+%
+%	Authors: Bogdan DUMITRESCU & Dan STEFANOIU
+%   Modified: Student Badea Cătălin Gabriel - 331AC
+%	Created: March 15, 2010 
+%	Revised: July  10, 2019
+%   Modified: Decembrie 31, 2025
+%
+
+function [B,A,M_found,W_c] = But_FTI_amplified(W_p,W_s,Delta_p,Delta_s,Ts)
+
+%
+% BEGIN
+%
+% Constants & Messages 
+% ~~~~~~~~~~~~~~~~~~~~
+	FN = '<BUT_FTI>: ' ;
+	E1 = [FN 'Missing, empty or inconsistent input data => empty outputs. Exit.'] ; 
+%
+% Faults preventing
+% ~~~~~~~~~~~~~~~~~
+	B = [] ; 
+	A = [] ; 
+	if (nargin < 3)
+	   war_err(E1) ;
+	   return ; ; 
+	end ; 
+	W_p = abs(W_p(1)) ; 
+	if (W_p < eps) || (W_p >= (1-eps))
+	   war_err(E1) ;
+	   return ; ; 
+	end ; 
+	W_s = abs(W_s(1)) ; 
+	if (W_s < eps) || (W_s >= (1-eps))
+	   war_err(E1) ;
+	   return ; ; 
+	end ; 
+	Delta_p = abs(Delta_p(1)) ; 
+	if (Delta_p < eps) || (Delta_p >= (1-eps))
+	   war_err(E1) ;
+	   return ; ; 
+	end ; 
+	if (nargin < 4)
+	   Delta_s = Delta_p ;
+	end ; 
+	Delta_s = abs(Delta_s(1)) ; 
+	if (Delta_s < eps) || (Delta_s >= (1-eps))
+	   war_err(E1) ;
+	   return ; ; 
+	end ; 
+	if (W_p > W_s)
+	   FN = W_p ; 
+	   W_p = W_s ; 
+	   W_s = FN ; 
+	end ; 
+	if (nargin < 5)
+	   Ts = 2 ; 
+	end ; 
+	Ts = abs(Ts(1)) ; 
+	if (Ts < eps)
+	   Ts = 2 ; 
+	end ;
+
+%
+% Filter design
+% ~~~~~~~~~~~~~
+% Step #1: Find the parameters of analog Butterworth filter
+%
+
+	W_p = 2*tan(W_p*pi/2)/Ts ; 	% Compute Omega_p.
+	W_s = 2*tan(W_s*pi/2)/Ts ; 	% Compute Omega_s.
+
+    M = ceil(   log( (1 + Delta_p + Delta_s)*(1 + Delta_p - Delta_s) / ( Delta_p * Delta_s^2 * (2 + Delta_p) ))   /  (2*log(W_s/W_p))  );
+    M_found = M;
+    W_c = W_p / ( Delta_p * (2 + Delta_p) )^( 1/(2*M) );
+%
+% Step #2: Build the transfer function of analog Butterworth filter
+%
+
+	FN = W_c*exp(1j*(M+(1:2:(2*M)))*pi/M/2) ; % The stable poles of filter. 
+    
+%
+% Step #3: Build the transfer function of digital Butterworth filter
+%
+
+	FN = FN*Ts ; 			                    % Normalize the poles. 
+	E1 = 2-FN ; 
+	B = real(prod(-FN./E1)*poly(-ones(1,M))) ; 	% Numerator of transfer function.
+    B = B * (1 + Delta_p);
+	A = real(poly((2+FN)./E1)) ; 			    % Denominator of transfer function.
+
+%
+% END
+%

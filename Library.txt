@@ -1,0 +1,65 @@
+Library of M-files designed for main programs: <Faza1.m> & <Faza2.m> & <Faza3.m> & <Faza4.m> & <DateProblema.m>
+
+# Function But_FTI_amplified
+       Call: [B,A,M_found,W_c] = But_FTI_amplified(W_p,W_s,Delta_p,Delta_s,Ts)
+       Filtru Butterworth cu amplificare H(0) = 1 + Delta_p. Returnează coeficienții, ordinul și frecvența critică.
+
+# Function But_FTI_detailed
+       Call: [B,A,M_found,W_c] = But_FTI_detailed(w_p,w_s,Delta_p,Delta_s,Ts)
+       Filtru digital Butterworth Low-pass prin metoda Tustin. Returnează coeficienții, ordinul minim găsit și frecvența critică.
+
+# Function But_FTI_PseudoTustin
+       Call: [B,A,M_found,W_c] = But_FTI_PseudoTustin(w_p,w_s,Delta_p,Delta_s,Ts)
+       Varianta pseudo-Tustin a filtrului Butterworth. Returnează coeficienții, ordinul și W_c.
+
+# Function F_calculare_performanta
+       Call: scorPerform = F_calculare_performanta(H, M, w, omega_p, omega_s, Delta_p, Delta_s)
+       Calculează performanța unui filtru pe baza ordinului, erorii în benzile de trecere/stop și vitezei de tranziție. Returnează un scor scalar.
+
+# Function F_find_best_cheby1
+       Call: [b_cheb, a_cheb, H_cheb, M_found, ok] = F_find_best_cheby1(M, w, omega_p, omega_s, Delta_p, Delta_s, Max_M)
+       Găsește cel mai bun filtru Chebîșev de tip I, încercând să respecte toleranțele specificate. Returnează coeficienții, răspunsul în frecvență, ordinul găsit și statusul de verificare.
+
+# Function F_find_best_cheby2
+       Call: [b_cheb, a_cheb, H_cheb, M_found, ok] = F_find_best_cheby2(M, w, omega_p, omega_s, Delta_p, Delta_s, Max_M)
+       Găsește cel mai bun filtru Chebîșev de tip II, încercând să respecte toleranțele specificate. Returnează coeficienții, răspunsul în frecvență, ordinul găsit și statusul de verificare.
+
+# Function F_find_best_ellip
+       Call: [b_ellip, a_ellip, H_ellip, M_found, ok] = F_find_best_ellip(M, w, omega_p, omega_s, Delta_p, Delta_s, Max_M)
+       Găsește cel mai bun filtru eliptic, respectând toleranțele pentru banda de trecere și stop. Returnează coeficienții, răspunsul în frecvență, ordinul și statusul.
+
+# Function F_find_best_fir1
+       Call: [h_fir1, H_fir1, M_found, ok] = F_find_best_fir1(M, w_c, w, omega_p, omega_s, Delta_p, Delta_s, Max_M)
+       Găsește cel mai bun filtru FIR de tip I (fir1), respectând toleranțele specificate. Returnează coeficienții, răspunsul în frecvență, ordinul și statusul.
+
+# Function F_find_best_firls
+       Call: [h_firls, H_firls, M_found, ok] = F_find_best_firls(M, w, omega_p, omega_s, Delta_p, Delta_s, Max_M)
+       Găsește cel mai bun filtru FIR folosind metoda celor mai mici pătrate (firls). Returnează coeficienții, răspunsul în frecvență, ordinul și statusul.
+
+# Function F_plot_db
+       Call: F_plot_db(w, H, w_c, M, Ts, omega_p, omega_s, Delta_p, Delta_s, title_str, show)
+       Plotează modulul filtrului H în dB. Include opțional linii pentru frecvențele critice și toleranțe. Afișează informații despre ordinul filtrului și Ts.
+
+# Function F_plot_err
+       Call: F_plot_err(w, err_vector, norm_val, title_str, ylabel_str)
+       Plotează vectorul de eroare al filtrului pe axa w. Include informația privind norma vectorului.
+
+# Function F_plot_faza
+       Call: F_plot_faza(w, H, w_c, M, Ts, omega_p, omega_s, title_str, show)
+       Plotează faza filtrului H. Opțional adaugă linii pentru frecvențele critice. Afișează informații despre ordinul filtrului și Ts.
+
+# Function F_plot_lin
+       Call: F_plot_lin(w, H, w_c, M, Ts, omega_p, omega_s, Delta_p, Delta_s, title_str, show)
+       Plotează modulul filtrului H pe axa liniară. Include opțional linii pentru frecvențele critice și toleranțe. Afișează informații despre ordinul filtrului și Ts.
+
+# Function O_optimize_cheby1
+       Call: [b_best, a_best, H_best, M_best, w_c_best, scor_best] = O_optimize_cheby1(M_start, w, omega_p, omega_s, Delta_p, Delta_s)
+       Optimizează filtrul Chebyshev de tip I prin variația ordinului M și a frecvenței de tăiere w_c, folosind un scor de performanță. Returnează filtrul optim, ordinul, frecvența critică și scorul maxim obținut.
+
+# Function O_optimize_cheby2
+       Call: [b_best, a_best, H_best, M_best, w_c_best, scor_best] = O_optimize_cheby2(M_start, w, omega_p, omega_s, Delta_p, Delta_s)
+       Optimizează filtrul Chebyshev de tip II prin variația ordinului M și a frecvenței de tăiere w_c, utilizând un scor de performanță. Returnează filtrul optim, ordinul, frecvența critică și scorul maxim obținut.
+
+# Function O_optimize_ellip
+       Call: [b_best, a_best, H_best, M_best, w_c_best, scor_best] = O_optimize_ellip(M_start, w, omega_p, omega_s, Delta_p, Delta_s)
+       Optimizează filtrul eliptic prin variația ordinului M și a frecvenței de tăiere w_c, folosind un scor de performanță. Returnează filtrul optim, ordinul, frecvența critică și scorul maxim obținut.
